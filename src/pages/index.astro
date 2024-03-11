@@ -2,7 +2,6 @@
 import Layout from "../layouts/Layout.astro";
 import { newtClient } from "../lib/newt";
 import type { Article } from "../lib/newt";
-import Button from "../components/Button.astro";
 
 const { items: articles } = await newtClient.getContents<Article>({
 	appUid: "blog",
@@ -15,21 +14,20 @@ const { items: articles } = await newtClient.getContents<Article>({
 
 <Layout title="Newt・Astroブログ" description="NewtとAstroを利用したブログです">
 	<main>
-		<ul>
-			{
-				articles.map((article) => {
-					return (
-						<li>
-							<a href={`/articles/${article.slug}`}>
-								{article.title}
-							</a>
-						</li>
-					);
-				})
-			}
-		</ul>
 		<div class="grid place-items-center h-screen content-center">
-			<Button>Tailwind Button in Astro!</Button>
+			<ul>
+				{
+					articles.map((article) => {
+						return (
+							<li>
+								<a href={`/articles/${article.slug}`}>
+									{article.title}
+								</a>
+							</li>
+						);
+					})
+				}
+			</ul>
 		</div>
 	</main>
 </Layout>
