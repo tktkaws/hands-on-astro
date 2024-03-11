@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import { newtClient } from "../lib/newt";
 import type { Article } from "../lib/newt";
+import Button from "../components/Button.astro";
 
 const { items: articles } = await newtClient.getContents<Article>({
 	appUid: "blog",
@@ -27,5 +28,8 @@ const { items: articles } = await newtClient.getContents<Article>({
 				})
 			}
 		</ul>
+		<div class="grid place-items-center h-screen content-center">
+			<Button>Tailwind Button in Astro!</Button>
+		</div>
 	</main>
 </Layout>
