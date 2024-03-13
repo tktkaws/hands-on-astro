@@ -1,0 +1,30 @@
+---
+const { tag } = Astro.props;
+---
+
+<li>
+    <a href={`/tags/${tag.slug}`} class="c-tag">
+        <span>
+            {tag.name}
+        </span>
+    </a>
+</li>
+
+<style>
+    li {
+        display: inline;
+        margin-inline-end: 0.5rem;
+    }
+    .c-tag {
+        border: solid 1px;
+        border-radius: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 2rem;
+        padding-inline: 0.5rem;
+        min-width: 100px;
+        background-color: #000;
+        color: #fff;
+    }
+</style>
