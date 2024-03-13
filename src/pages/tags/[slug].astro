@@ -1,0 +1,74 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { newtClient } from "../../lib/newt";
+import type { Article, Tag } from "../../lib/newt";
+
+export const getStaticPaths = async () => {
+    const { items: tags } = await newtClient.getContents<Tag>({
+        appUid: "blog",
+        modelUid: "tag",
+        query: {
+            select: ["name", "slug", "_id"],
+        },
+    });
+    // console.log("tags");
+
+    // console.log(tags);
+    // console.log(tags[0]);
+
+    return tags.map((tag) => ({
+        params: { slug: tag.slug },
+        props: { tag },
+    }));
+};
+
+// const { items: articles } = await newtClient.getContents<Article>({
+//     appUid: "blog",
+//     modelUid: "article",
+//     query: {
+//         select: ["title", "slug", "body", "tags", "createdAt", "author"],
+//     },
+// });
+// console.log("articles", articles);
+const { tag } = Astro.props;
+
+// タグから記事一覧を取得する
+const getArticleByTags = async (tagId: string) => {
+    const items = await newtClient.getContents<Article>({
+        appUid: "blog",
+        modelUid: "article",
+        query: {
+            tags: {
+                in: [tagId],
+            },
+        },
+    });
+    // console.log(tag._id);
+    // console.log("items", items);
+    return items;
+};
+
+// console.log(tag._id);
+const tagedItems = await getArticleByTags(tag._id);
+const articles = tagedItems.items;
+console.log("articles", articles[0].slug);
+---
+
+<Layout title={tag.name} description="投稿詳細ページです">
+    <main>
+        <p>{tag.name}</p>
+        <ul class="flex flex-wrap">
+            {
+                articles.map((article) => {
+                    return (
+                        <li class="p-4 lg:w-1/3 h-full bg-gray-100 bg-opacity-75 px-8 pt-16 pb-24 rounded-lg overflow-hidden text-center relative">
+                            <a href={`/articles/${article.slug}`}>
+                                {article.title}
+                            </a>
+                        </li>
+                    );
+                })
+            }
+        </ul>
+    </main>
+</Layout>
