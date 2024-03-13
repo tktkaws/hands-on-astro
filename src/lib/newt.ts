@@ -6,6 +6,10 @@ export interface Article {
     body: string
 }
 
+export interface Tag {
+    name: string
+    slug: string
+}
 
 export const newtClient = createClient({
     spaceUid: import.meta.env.NEWT_SPACE_UID,
