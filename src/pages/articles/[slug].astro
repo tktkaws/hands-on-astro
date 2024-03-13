@@ -1,16 +1,19 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import Tag from "../../components/Tag.astro";
 import { newtClient } from "../../lib/newt";
-import type { Article } from "../../lib/newt";
+import type { Article, Tag } from "../../lib/newt";
 
 export const getStaticPaths = async () => {
     const { items: articles } = await newtClient.getContents<Article>({
         appUid: "blog",
         modelUid: "article",
         query: {
-            select: ["title", "slug", "body"],
+            select: ["title", "slug", "body", "tags", "coverImage"],
         },
     });
+    console.log("articles", articles);
+
     return articles.map((article) => ({
         params: { slug: article.slug },
         props: { article },
@@ -22,7 +25,38 @@ const { article } = Astro.props;
 
 <Layout title={article.title} description="投稿詳細ページです">
     <main>
-        <h2>{article.title}</h2>
+        <h1>{article.title}</h1>
+        <img src={`${article.coverImage.src}`} alt="" />
         <article set:html={article.body} />
+        <ul class="l-card-list">
+            {
+                article.tags.map((tag) => {
+                    return <Tag tag={tag} />;
+                })
+            }
+        </ul>
     </main>
 </Layout>
+<style>
+    h1 {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-top: 2rem;
+    }
+    img {
+        margin-top: 2rem;
+        width: min(100%, 600px);
+        height: auto;
+        aspect-ratio: 16 / 9;
+        object-fit: contain;
+    }
+    article {
+        margin-top: 2rem;
+    }
+    .l-card-list {
+        display: flex;
+        gap: 2rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+    }
+</style>
