@@ -1,33 +1,63 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Card from "../components/Card.astro";
+import Tag from "../components/Tag.astro";
 import { newtClient } from "../lib/newt";
-import type { Article } from "../lib/newt";
+import type { Article, Tag } from "../../lib/newt";
 
 const { items: articles } = await newtClient.getContents<Article>({
 	appUid: "blog",
 	modelUid: "article",
 	query: {
-		select: ["title", "slug", "body"],
+		select: ["title", "slug", "body", "coverImage"],
+	},
+});
+
+const { items: tags } = await newtClient.getContents<Tag>({
+	appUid: "blog",
+	modelUid: "tag",
+	query: {
+		select: ["name", "slug", "_id"],
 	},
 });
 ---
 
 <Layout title="Newt・Astroブログ" description="NewtとAstroを利用したブログです">
 	<main>
-		<div class="grid place-items-center h-screen content-center">
-			<ul>
+		<div class="">
+			<ul class="l-card-list">
 				{
 					articles.map((article) => {
 						return (
-							<li>
-								<a href={`/articles/${article.slug}`}>
-									{article.title}
-								</a>
-							</li>
+							<>
+								<Card article={article} />
+							</>
 						);
 					})
 				}
 			</ul>
+			<div class="l-tag-list">
+				{
+					tags.map((tag) => {
+						return <Tag tag={tag} />;
+					})
+				}
+			</div>
 		</div>
 	</main>
 </Layout>
+
+<style>
+	.l-card-list {
+		display: flex;
+		gap: 2rem;
+		margin-top: 2rem;
+		flex-wrap: wrap;
+	}
+	.l-tag-list {
+		display: flex;
+		gap: 2rem;
+		margin-top: 2rem;
+		margin-bottom: 2rem;
+	}
+</style>
