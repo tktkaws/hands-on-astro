@@ -9,10 +9,18 @@ export const getStaticPaths = async () => {
         appUid: "blog",
         modelUid: "article",
         query: {
-            select: ["title", "slug", "body", "tags", "coverImage"],
+            select: [
+                "title",
+                "slug",
+                "body",
+                "tags",
+                "coverImage",
+                "price",
+                "type",
+                "url",
+            ],
         },
     });
-    console.log("articles", articles);
 
     return articles.map((article) => ({
         params: { slug: article.slug },
@@ -21,20 +29,39 @@ export const getStaticPaths = async () => {
 };
 
 const { article } = Astro.props;
+console.log(article.coverImage);
 ---
 
 <Layout title={article.title} description="投稿詳細ページです">
     <main>
-        <h1>{article.title}</h1>
-        <img src={`${article.coverImage.src}`} alt="" />
-        <article set:html={article.body} />
-        <ul class="l-card-list">
-            {
-                article.tags.map((tag) => {
-                    return <Tag tag={tag} />;
-                })
-            }
-        </ul>
+        <article>
+            <div class="aritcle-inner">
+                <a href={article.url} target="_blank">
+                    <h1>{article.title}</h1>
+                </a>
+                <a href={article.url} target="_blank" class="image-link">
+                    <img src={`${article.coverImage.src}`} alt="" />
+                </a>
+                <ul class="l-tag-list">
+                    {
+                        article.tags.map((tag) => {
+                            return <Tag tag={tag} />;
+                        })
+                    }
+                    <li class="c-tag">
+                        <span>
+                            ¥ {article.price}
+                        </span>
+                    </li>
+                    <li class="c-tag">
+                        <span>
+                            {article.type}
+                        </span>
+                    </li>
+                </ul>
+                <section set:html={article.body} class="l-body" />
+            </div>
+        </article>
     </main>
 </Layout>
 <style>
@@ -42,6 +69,12 @@ const { article } = Astro.props;
         font-size: 2rem;
         font-weight: bold;
         margin-top: 2rem;
+        border-bottom: solid 2px;
+    }
+    .image-link {
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     img {
         margin-top: 2rem;
@@ -52,11 +85,36 @@ const { article } = Astro.props;
     }
     article {
         margin-top: 2rem;
+        display: grid;
+        grid-template-columns: 1fr 1000px 1fr;
     }
-    .l-card-list {
+    .aritcle-inner {
+        grid-column: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .l-tag-list {
         display: flex;
         gap: 2rem;
         margin-top: 2rem;
         flex-wrap: wrap;
+    }
+    .price,
+    .type {
+        font-weight: bold;
+    }
+    .c-tag {
+        border: solid 1px;
+        border-radius: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 2rem;
+        padding-inline: 0.5rem;
+        min-width: 100px;
+        background-color: #fff;
+        color: #000;
     }
 </style>
