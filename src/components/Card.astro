@@ -4,7 +4,10 @@ const { article } = Astro.props;
 
 <li class="c-card">
 	<a href={`/articles/${article.slug}`}>
-		<img src={`${article.coverImage.src}`} alt="" />
+		<div class="image-container">
+			<img src={`${article.coverImage.src}`} alt="" class="main-image" />
+			<img src={`${article.coverImage.src}`} alt="" class="bg-image" />
+		</div>
 		<h2>
 			{article.title}
 		</h2>
@@ -13,9 +16,11 @@ const { article } = Astro.props;
 <style>
 	.c-card {
 		width: 300px;
-		height: 300px;
+		height: 360px;
+		box-shadow: 0 0 6px 1px rgba(0, 0, 0, 0.16);
+
 		/* border: solid 1px; */
-		/* border-radius: 1rem; */
+		border-radius: 1rem;
 	}
 	.c-card a {
 		width: 100%;
@@ -24,8 +29,9 @@ const { article } = Astro.props;
 	}
 
 	h2 {
-		margin-top: 2rem;
+		/* margin-top: 2rem; */
 		/* padding: 1rem; */
+		padding: 1rem;
 		font-size: 1.25rem;
 		font-weight: bold;
 	}
@@ -38,8 +44,37 @@ const { article } = Astro.props;
 		width: 100%;
 		height: auto;
 		aspect-ratio: 16/9;
+		object-fit: contain;
+		/* border-radius: 1rem; */
+		border-top-left-radius: 1rem;
+		border-top-right-radius: 1rem;
+	}
+
+	.image-container {
+		position: relative;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 16/9;
+		/* width: 300px; 
+		height: 200px;  */
+		overflow: hidden;
+	}
+
+	.main-image {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+	}
+
+	.bg-image {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
 		object-fit: cover;
-		border-radius: 1rem;
+		filter: blur(6px); /* ブラー効果の強さ */
+		z-index: -1; /* 画像より背面に配置 */
 	}
 	/* * {
 		border: solid 1px magenta;
