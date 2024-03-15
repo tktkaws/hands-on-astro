@@ -1,8 +1,10 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import Pagination from "../../components/Pagination.astro";
 import Tag from "../../components/Tag.astro";
 import { newtClient } from "../../lib/newt";
 import type { Article, Tag } from "../../lib/newt";
+import { getAllSlugs, prevNextPost } from "../../lib/api";
 
 export const getStaticPaths = async () => {
     const { items: articles } = await newtClient.getContents<Article>({
@@ -29,7 +31,13 @@ export const getStaticPaths = async () => {
 };
 
 const { article } = Astro.props;
-console.log(article.coverImage);
+// console.log(article.coverImage);
+
+const allSlugs = await getAllSlugs();
+console.log("allSlugs", allSlugs);
+const [prevPost, nextPost] = prevNextPost(allSlugs, article.slug);
+console.log("prevPost", prevPost);
+console.log("nextPost", nextPost);
 ---
 
 <Layout title={article.title} description="投稿詳細ページです">
@@ -50,7 +58,7 @@ console.log(article.coverImage);
                     }
                     <li class="c-tag">
                         <span>
-                            ¥ {article.price}
+                            {article.price}
                         </span>
                     </li>
                     <li class="c-tag">
@@ -60,6 +68,12 @@ console.log(article.coverImage);
                     </li>
                 </ul>
                 <section set:html={article.body} class="l-body" />
+                <Pagination
+                    prevText={prevPost.title}
+                    prevUrl={`/articles/${prevPost.slug}`}
+                    nextText={nextPost.title}
+                    nextUrl={`/articles/${nextPost.slug}`}
+                />
             </div>
         </article>
     </main>

@@ -34,3 +34,46 @@ export const getArticleByPrice = async (price: string) => {
 	const items = Articles.items;
 	return items;
 }
+
+export async function getAllSlugs(limit = 100) {
+	try {
+		const slugs = await newtClient.getContents<Article>({
+			appUid: "blog",
+			modelUid: "article",
+			query: {
+				select: ["title", "slug"],
+			},
+		});
+		return slugs.items;
+	} catch (err) {
+		console.log("~~ getAllSlugs ~~");
+		console.log(err);
+	}
+}
+
+export const getAllSlugsByTags = async (tagId: string) => {
+	const slugs = await newtClient.getContents<Article>({
+		appUid: "blog",
+		modelUid: "article",
+		query: {
+			select: ["title", "slug"],
+			tags: {
+				in: [tagId],
+			},
+		},
+	});
+	return slugs.items;
+};
+
+export function prevNextPost(allSlugs, currentSlug) {
+	const numberOfPosts = allSlugs.length
+
+	const index = allSlugs.findIndex(({ slug }) => slug === currentSlug)
+
+	const prevPost =
+		index + 1 === numberOfPosts ? { title: '', slug: '' } : allSlugs[index + 1]
+
+	const nextPost = index === 0 ? { title: '', slug: '' } : allSlugs[index - 1]
+
+	return [prevPost, nextPost]
+}
