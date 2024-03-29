@@ -1,5 +1,7 @@
 ---
 const { article } = Astro.props;
+import Tag from "./Tag.astro";
+console.log(article.tags);
 ---
 
 <li class="c-card">
@@ -11,6 +13,21 @@ const { article } = Astro.props;
 		<h2>
 			{article.title}
 		</h2>
+		<!-- <ul class="c-card-tag-list">
+			{
+				article.tags &&
+					article.tags.length > 0 &&
+					article.tags.map((tag) => {
+						return (
+							<li>
+								<a href={`/tags/${tag.slug}`}>
+									<span>{tag.name}</span>
+								</a>
+							</li>
+						);
+					})
+			}
+		</ul> -->
 	</a>
 </li>
 <style>

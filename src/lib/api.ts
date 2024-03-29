@@ -20,7 +20,7 @@ export const getArticleByTags = async (tagId: string) => {
 
 // 価格から記事一覧を取得する
 export const getArticleByPrice = async (price: string) => {
-	console.log('price:', price);
+	// console.log('price:', price);
 	const Articles = await newtClient.getContents<Article>({
 		appUid: "blog",
 		modelUid: "article",
@@ -29,7 +29,7 @@ export const getArticleByPrice = async (price: string) => {
 			price: price,
 		},
 	},);
-	console.log('Articles:', Articles);
+	// console.log('Articles:', Articles);
 
 	const items = Articles.items;
 	return items;

@@ -31,7 +31,6 @@ export const getStaticPaths = async () => {
 };
 
 const { article } = Astro.props;
-// console.log(article.coverImage);
 
 const allSlugs = await getAllSlugs();
 console.log("allSlugs", allSlugs);
